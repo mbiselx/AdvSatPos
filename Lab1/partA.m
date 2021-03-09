@@ -55,6 +55,8 @@ M = MeanAnomaly(M0, sqrta, toe, t);
 
 figure(1)
 sf = 1e-6; #scaling factor because otherwise axis("equals") crashes octave
+set(groot,'DefaultAxesFontSize',14)
+set(groot,'DefaultLineLineWidth',1.5)
     h1 = plot(sf*X, sf*Y, "linewidth",1.5);         # orbit
     hold on;
     h2 = plot(sf*X0, sf*Y0, "o", "linewidth",1.5);  # Position at toe
