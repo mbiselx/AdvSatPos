@@ -1,0 +1,52 @@
+% Advanced Satellite Positioning 
+%
+% LAB 2 - Self-control  values to use in debugging Bancroft algorithm
+%
+% Jan Skaloud, 2013-03-12
+%
+% NOTES: 	o  P ranges are corrected for broadcasted SV clock error
+%		o  P ranges are NOT corrected for the Earth rotation !!!
+%
+
+INPUT VALUES FOR DEBUGGING
+-----------------------------
+
+		ECEF SATELLITE COORDINATES		PSEUDORANGES
+	   X              Y               Z             P
+26	-12522936.0	 9219150.6	21645309.5	20870095.9
+23	  8198595.7	15366463.9	20430971.9	24042783.1
+17	-1377763.1	19788593.0	17301213.3	21621621.3
+02	-18866890.6	-11916778.5	15176225.1	24379728.7
+10	-26350373.3	327459.3	3638608.4	22757162.3
+09	-15781457.3	21148800.8	1252783.6	21659750.4
+
+ SOLUTIONS - FOR DEBUGGING 
+===============================================================================
+
+* First iteration (guess on position: Earth Centre, travel_time = 0.072s)
+
+				SV coordinates
+              X                       Y					Z 
+         -12522887.5963098          9219216.34933066                21645309.5
+          8198676.37878439          15366420.8545134                20430971.9
+         -1377659.20347791          19788600.2334284                17301213.3
+         -18866953.1666751         -11916679.4425679                15176225.1
+
+	X -3941742.3
+        Y  3354290.3
+        Z  3714880.9
+        d   144901.5
+	
+* Second iteration (using results of the first iteration to calculate travel time)
+
+				SV coordinates
+              X                         Y                               Z
+	 -12522889.5245958           9219213.7300501                21645309.5
+          8198685.02327107           15366416.242288                20430971.9
+         -1377659.72509983          19788600.1971137                17301213.3
+         -18866960.8472659         -11916667.2823472                15176225.1
+
+	X -3941738.6
+        Y  3354289.5
+        Z  3714888.4
+        d   144906.2
