@@ -41,6 +41,7 @@ function Xe = ECEFSatellitePosition(ephm, tow, SVprn=0)
     for sv = SVprn
         idx = find( ephm(prn,:) == sv);
         m = max( ephm(toe, idx(ephm(toe, idx) <= tow) ));   % the past time clostest to tow
+        if isempty(m) error(sprintf('No ephemerids found for SV%d before %.3f s.', sv, tow)); end
         SVidx(SVprn == sv) = idx(ephm(toe,idx) == m);
     end
 

@@ -45,7 +45,8 @@ we      = 7.2921151467e-5;       % [rad s^-1]
 SVprn1 = [2, 7, 8, 11];% 25 30 36];
 [ephm1, meas1] = SelectEphmMeas(ephm, meas, tow, SVprn1);
 
-[r1, b1] = CalcPos(ephm1, meas1, tow, SVprn1);
+% calculate the receiver position
+[r1, b1] = CalcPos(ephm1, meas1, SVprn1, tow);
 
 fprintf("Part A1:\n");
 fprintf("\tCalculated position is %7.0f / %7.0f / %7.0f [m].\n", r1(1), r1(2), r1(3));
@@ -63,7 +64,8 @@ end
 SVprn2 = [2, 7, 8, 11, 25, 30, 36];
 [ephm2, meas2] = SelectEphmMeas(ephm, meas, tow, SVprn2);
 
-[r2, b2] = CalcPos(ephm2, meas2, tow, SVprn2);
+% calculate the receiver position
+[r2, b2] = CalcPos(ephm2, meas2, SVprn2, tow);
 
 fprintf("Part A2:\n");
 fprintf("\tCalculated position is %7.0f / %7.0f / %7.0f [m].\n", r2(1), r2(2), r2(3));

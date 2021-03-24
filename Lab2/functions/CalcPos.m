@@ -1,4 +1,5 @@
-function [r, b] = CalcPos(ephm, meas, tow, SVprn)
+function [r, b] = CalcPos(ephm, meas, SVprn, tow)
+% calculate the position of a GPS receiver using the Bancroft method
 
     prn     = 1;
     af0     = 2;
@@ -12,16 +13,16 @@ function [r, b] = CalcPos(ephm, meas, tow, SVprn)
     we      = 7.2921151467e-5;       % [rad s^-1]
 
 
-    % preparation
+    % initialization
     tau = meas(psr,:)/c;
 
-    % loop
+    % iterative calculation loop
     for i=0:2
         tk  = tow - tau;
         dtk = ephm(af0,:) + ephm(af1,:).*(tk - ephm(toe,:))+ ephm(af2,:).*(tk - ephm(toe,:)).^2;
         Pk  = meas(psr,:) + c*dtk;
 
-        for i = 1:length(SVprn)
+        for i = 1:length(SVprn) % (re)calculate satellite positions
             Xe(:,i) = ECEFSatellitePosition(ephm, tk(i), SVprn(i));
             Xk(:,i) = RotMat(we*tau(i), 3)*Xe(:,i);
         end
