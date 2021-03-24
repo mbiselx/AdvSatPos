@@ -83,7 +83,7 @@ fprintf("B3)\tthe calculated position is:\n\t%.6f deg\n\t%.6f deg\n\t%.1f m\n", 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % select only the relevant ephemera and measurements
-SVprn4 = [7, 11, 25, 30]; % all satellites
+SVprn4 = [7, 11, 25, 30];
 [ephm4, meas4] = SelectEphmMeas(ephm, meas, tow, SVprn4);
 
 % preparation (initial guesses)
@@ -97,7 +97,7 @@ ell4 = xyz2plh(X4);
 fprintf("B4)\tthe difference between solutions A2 and B4 is %.1f m\n", sqrt(sum((X_bancroft-X4).^2, 1)));
 fprintf("\tthe calculated position is:\n\t%.6f deg\n\t%.6f deg\n\t%.1f m\n", rad2deg(ell4(1)), rad2deg(ell4(2)), ell4(3));
 
-fprintf("B2)\tthe values of the DOPs are as follows:\n")
+fprintf("\tthe values of the DOPs are as follows:\n")
 fprintf("\tGDOP = %.2f\n",DOPs(1))
 fprintf("\tPDOP = %.2f\n",DOPs(2))
 fprintf("\tHDOP = %.2f\n",DOPs(3))

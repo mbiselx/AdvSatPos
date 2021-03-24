@@ -33,7 +33,6 @@ GRS80.e2  = 1-GRS80.b^2/GRS80.a^2;
   title(GRS80.name)
   axis("equal", 'off')
   colormap(cmap)
-  colorbar;
   shading flat;
   grid off;
   rotate3d on;

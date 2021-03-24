@@ -76,7 +76,7 @@ fprintf("\tDeltaT is %.1f m\n", b2);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 difference = sqrt(sum((r1-r2).^2));
-fprintf("The difference between A1 and A2 is %.0f m.\n", difference);
+fprintf("The difference between A1 and A2 is %.1f m.\n", difference);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ex 4

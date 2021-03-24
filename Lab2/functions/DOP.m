@@ -3,7 +3,7 @@ function [GDOP, PDOP, HDOP, VDOP] = DOP(X, A, P)
     Qxyz = pinv(A'*P*A);				% confidence matrix (cartesian)
 
     ell = xyz2plh(X);
-    Renu = R_ENU(ell(1), ell(2))		% ENU rotation matrix
+    Renu = R_ENU(ell(1), ell(2));		% ENU rotation matrix
     Qenu = Renu' * Qxyz(1:3,1:3) * Renu;% confidence matrix (ENU)
 
     GDOP = sqrt(sum(diag(Qxyz)));		% calculate the different DOPs
