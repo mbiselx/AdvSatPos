@@ -3,7 +3,7 @@ function [settings] = initSettings
 % To be modified by the Student in every Exercise
 
 % Select the signal modulation, it should be BPSK or BOC11
-settings.modulation = 'BOC11';
+settings.modulation = 'BPSK';
 
 % Select the early-late spacing, 0<spacing<1 (d)
 settings.spacing = 1;                                  % [chips]
@@ -19,7 +19,7 @@ settings.multipath = 1;
 settings.MSAR = 0.6;
 
 % Select the Multipath Delay
-settings.multipath_delay = 0.3;                          % [chips]
+settings.multipath_delay = 0.5;                          % [chips]
 
 % Select the Multipath Phase
 settings.multipath_phase = 0;                             % [rad]

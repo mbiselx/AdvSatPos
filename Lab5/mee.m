@@ -27,15 +27,14 @@ newcolors = [0, 0.4470, 0.7410
              0.6350, 0.0780, 0.1840
              0.4660, 0.6740, 0.1880
              0.4660, 0.6740, 0.1880];
-         
+
 set(gcf,'DefaultAxesColorOrder',newcolors)
 
 lambda_L1 = 3e8/1.023e6;
-plot(delay*lambda_L1,multipath_error_c,'LineWidth',2)
+h = plot(delay*lambda_L1,multipath_error_c,'LineWidth',2);
 hold on
 plot(delay*lambda_L1,multipath_error_d,'LineWidth',2)
 grid on;
 % Create axes labels
 xlabel('Multipath Delay [m]');
 ylabel('Multipath Code Error [m]');
-        
