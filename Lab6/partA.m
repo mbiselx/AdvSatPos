@@ -23,7 +23,7 @@ F_E5a           = 115;          % [-]
 l_E1            = c/F0/F_E1;
 l_E5a           = c/F0/F_E5a;
 
-obsw            = [0.5 0.5 0.01 0.01].^2;
+obsw            = [0.5 0.5 0.01 0.01].^-2;
 
 %% code and phase differencing observations
 % data is set up as [TOW(s) PRN P1X(m) P5X(m) L1X(cyc.) L5X(cyc.)]

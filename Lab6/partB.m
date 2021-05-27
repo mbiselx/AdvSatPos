@@ -14,16 +14,16 @@ load(strcat(datapath, 'datam.mat'));
 load(strcat(datapath, 'datar.mat'));
 
 % constants
-assgnd_base_prn = 7;            % [PRN]
+assgnd_base_prn = 2;            % [PRN]
 c               = 299792458;    % [m s^-1]
-F0              = 1.023e6;      % [Hz]
+F0              = 10.23e6;      % [Hz]
 F_E1            = 154;          % [-]
 F_E5a           = 115;          % [-]
 
 l_E1            = c/F0/F_E1;
 l_E5a           = c/F0/F_E5a;
 
-obsw            = [0.5 0.5 0.01 0.01].^2;
+obsw            = [0.5 0.5 0.01 0.01].^-2;
 
 %% code and phase differencing observations
 % data is set up as [TOW(s) PRN P1X(m) P5X(m) L1X(cyc.) L5X(cyc.)]
@@ -34,44 +34,53 @@ obsw            = [0.5 0.5 0.01 0.01].^2;
 datam(:,5:6)    = datam(:,5:6).*[l_E1, l_E5a];
 datar(:,5:6)    = datar(:,5:6).*[l_E1, l_E5a];
 
+%%------------------------------------------------------------
 % Part A: get the double differences and covariance matrix per epoch
 [ld, Cd]        = double_difference(datam, datar, assgnd_base_prn);
 
+
+%%------------------------------------------------------------
 % Part B:
-% B1
+% B1 recursively determine ddN1 and ddN2
+[N1, N2] = double_difference_ambiguity(ld, l_E1, l_E5a, obsw);
 
-% Step 1: form Normals equation (assuming neglectible Ionospheric delay for short baslines (i.e. < 5km difference))
-P               = diag(1./obsw);
-Ae              = [ones(4,1), [zeros(2); diag([l_E1, l_E5a])]];
+% B2 calculate wide-lane and iono-free ambiguities
+[Nwl, Nif] = widelane_ambiguities(N1, N2, F_E1, F_E5a);
 
-N = Ae'*P*Ae;
-B = Ae'*P;
-b = cellfun(@(l) {B*l(:, 3:6)'}, ld);
+% B3 using the Clyde Goad method, evaluate
+[N1_hat, N2_hat] = ClydeGoad_estimation(Nwl, Nif, F_E1, F_E5a);
 
-% for k = 1:length(ld)
-%     b{k} = Ae'*P*ld{k};
-% end
-% for k = 1:length(ld)
-%     x{k} = Ae'*P*ld{k} * inv(Ae'*P*Ae);
-% end
+% Output 4: ambiguity values usig all observations from all epochs:
+for k = 1:length(N1{end})
+    fprintf("DD(%2d-%2d):\tN1 =%6.1f (%4d)\tN2 =%6.1f (%4d)\tNwl =%6.1f\n", ...
+        assgnd_base_prn, ld{end}(k,2), ...
+        N1{end}(k), N1_hat{end}(k), ...
+        N2{end}(k), N2_hat{end}(k), ...
+        Nwl{end}(k))
+end
 
-% Step 2: Elimination of rho
-N22_inv = inv(N(2:3, 2:3) - N(1,2:3)*N(2:3,1)/N(1,1));
-b21 = cellfun(@(bb) {bb(2,:) - N(2:3,1)*bb(1,:)/N(1,1)}, b);
+% Output 5: plots of the wide-lane ambiguity evolution
+N_wl = cell2mat(Nwl');
+figure(1)
+for k = 1:length(N1{end})
+    subplot(3,2, k)
+    plot(N_wl(k,:))
+    title(sprintf("N_{WL (%d-%d)}", assgnd_base_prn, ld{end}(k,2)))
+    xlabel("[epochs]")
+    ylabel("[cycles]")
+end
 
-x = cellfun(@(bb) {N22_inv*bb}, b21)
-
-
-
-
-
-
-
-
-
-
-
-
+% B4 Analyze the differential delay of the ionosphere over epochs
+I = dd_iono_delay(ld, N1_hat, N2_hat, F_E1, F_E5a, l_E1, l_E5a);
+I = cell2mat(I');
+figure(2)
+for k = 1:length(N1{end})
+    subplot(3,2, k)
+    plot(1e3*I(k,:))
+    title(sprintf("Ionospheric phase delay for SV pair (%d-%d)", assgnd_base_prn, ld{end}(k,2)))
+    xlabel("[epochs]")
+    ylabel("delay [mm]")
+end
 
 % A = [1               1      0       0;
 %      1  (F_E1/F_E5a)^2      0       0;
