@@ -34,5 +34,9 @@ obsw            = [0.5 0.5 0.01 0.01].^-2;
 datam(:,5:6)    = datam(:,5:6).*[l_E1, l_E5a];
 datar(:,5:6)    = datar(:,5:6).*[l_E1, l_E5a];
 
-% get the double differences and covariance matrix per epoch
-[ld, Cd] = double_difference(datam, datar, assgnd_base_prn);
+
+%%------------------------------------------------------------
+% Part A: get the double differences and covariance matrix per epoch
+[ld, Cd]        = double_difference(datam, datar, assgnd_base_prn, obsw);
+
+[ld2, Cd2]      = double_difference_matrix(datam, datar, assgnd_base_prn, obsw);
