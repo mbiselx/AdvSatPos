@@ -53,27 +53,30 @@ obsr = mat2cell(datar, sum(datar(:,1) == unique(datar(:,1))'),size(datar,2));
 [X_r, X_rm, s_x]= ddLinObsFilter(obsm, obsr, ephm, ...
                                  ld, Cd, N1, N2, ...
                                  F0*F_E1, F0*F_E5a, ...
-                                 Xm, assgnd_base_prn, 10:121,
-                                 false, true);
+                                 Xm, assgnd_base_prn, 121,
+                                 true, true);
 
 %%------------------------------------------------------------
 % plot results
-X_rm = cell2mat(X_rm')';
-X_rm0 = mean(X_rm);
-dX_rm = 1000*(X_rm - X_rm0); % make zero-mean, so as not to explode the plot
+if length(X_r) > 2
+    X_rm = cell2mat(X_rm')';
+    X_rm0 = mean(X_rm);
+    dX_rm = 1000*(X_rm - X_rm0); % make zero-mean, so as not to explode the plot
 
-m_coords = xyz2plh(Xm');
-m_coords(1:2) = rad2deg(m_coords(1:2))
-r_coords = xyz2plh(X_r{end}');
-r_coords(1:2) = rad2deg(r_coords(1:2))
+    m_coords = xyz2plh(Xm');
+    m_coords(1:2) = rad2deg(m_coords(1:2))
+    r_coords = xyz2plh(X_r{end}');
+    r_coords(1:2) = rad2deg(r_coords(1:2))
 
 
-figure()
-plot3(dX_rm(:,1), dX_rm(:,2), dX_rm(:,3))
-axis("equal")
-xlabel("x [mm]")
-ylabel("y [mm]")
-zlabel("z [mm]")
-title("position around mean")
-grid on
-rotate3d on;
+    figure()
+    plot3(dX_rm(:,1), dX_rm(:,2), dX_rm(:,3))
+    axis("equal")
+    xlabel("x [mm]")
+    ylabel("y [mm]")
+    zlabel("z [mm]")
+    title("position around mean")
+    grid on
+    rotate3d on;
+
+end

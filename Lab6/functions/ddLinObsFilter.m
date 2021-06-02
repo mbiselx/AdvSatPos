@@ -1,8 +1,8 @@
 function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1, f2, X_m, prnb, epochs, verbose=true, draw=true)
 
     % constants
-    c           = 299792458;    % [m s^-1]
-    we          = 7.2921151467e-5;       % [rad s^-1]
+    c           = 299792458;            % [m s^-1]
+    we          = 7.2921151467e-5;      % [rad s^-1]
 
     % initial position guess
     X_r0        = X_m;
@@ -58,7 +58,7 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
                                 4*numel(N1{epochs(e)}), 1); % there is no ambiguity on the code measurements
         P           = inv(Cd{epochs(e)});
 
-         % iterative calculation
+        % iterative calculation
         dx          = ones(3,1);
         while (sqrt(dx'*dx) > 1e-3)
 
@@ -75,7 +75,7 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
             b           = Phi - Ambiguity - rho_dd0';
             A           = (u_s - u_b)';
             dx          = (A' * P * A) \ (A' * P) * b;
-            if verbose disp(dx); end;
+            if verbose disp("dx = "); disp(dx); end;
 
             % update values
             X_r0        = X_r0 + dx;

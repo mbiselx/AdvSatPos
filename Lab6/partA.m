@@ -38,5 +38,3 @@ datar(:,5:6)    = datar(:,5:6).*[l_E1, l_E5a];
 %%------------------------------------------------------------
 % Part A: get the double differences and covariance matrix per epoch
 [ld, Cd]        = double_difference(datam, datar, assgnd_base_prn, obsw);
-
-[ld2, Cd2]      = double_difference_matrix(datam, datar, assgnd_base_prn, obsw);

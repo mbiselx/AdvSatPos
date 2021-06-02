@@ -18,7 +18,7 @@ function [diff2, cov2] = double_difference(datam, datar, base_PRN, obsw)
         idx         = (other_diff1(:,1) == base_diff1(epoch,1));
         SVprn       = unique([base_PRN; other_diff1(idx, 2)]);
 
-        % second differenciation for epoch
+        % second differentiation for epoch
         diff2(epoch)= [other_diff1(idx,1:2), base_diff1(epoch,3:end) - other_diff1(idx,3:end)];
 
         % covariance matrix of all observations in epoch, ordered as

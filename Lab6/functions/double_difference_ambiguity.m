@@ -5,9 +5,9 @@ function [N1, N2] = double_difference_ambiguity(ld, wl1, wl2, obsw)
 %   ld          cell array containing the double differeced observations
 %               [TOW    PRN   P1  P2  L1  L2]
 %   wl1, wl2    wavelengths of the two frequencies
-%   obsw        weigts of the different observations (usually std(obs)^(-2))
+%   obsw        weights of the different observations (usually std(obs)^(-2))
 
-    %   Step 1: form Normals equation (assuming neglectible Ionospheric delay for short baslines (i.e. < 5km difference))
+    %   Step 1: form Normals equation (assuming neglectable Ionospheric delay for short baselines (i.e. < 5km difference))
     P       = diag(obsw);
     Ae      = [ones(4,1), [zeros(2); diag([wl1, wl2])]];
 
