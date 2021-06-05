@@ -1,11 +1,14 @@
 function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1, f2, X_m, prnb, epochs, verbose=true, draw=true)
+% calculate a position per epoch.
+% less precise, but is much quicker to calculate and gives an idea of the evolution over time
+% not really part of the lab06, just for fun
 
     % constants
     c           = 299792458;            % [m s^-1]
     we          = 7.2921151467e-5;      % [rad s^-1]
 
     % initial position guess
-    X_r0        = X_m;
+    X_r0        = X_m;%[4364603.528, 500455.408, 4609106.581]';
 
     % memory allocations
     X_r         = cell(length(epochs),1);
@@ -13,11 +16,11 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
     s_x         = cell(length(epochs),1);
 
     % for every epoch, calculate:
-    wb = waitbar(0);
+    if (length(epochs) > 2)  wb = waitbar(0); end
     for e = 1:length(epochs)
         if verbose
             disp("------------------------------------------------------------")
-            disp(sprintf("calculating epoch %d of %d", e, max(epochs)))
+            disp(sprintf("calculating epoch %d of %d", e, length(epochs)))
         end
 
         % basics
@@ -59,8 +62,9 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
         P           = inv(Cd{epochs(e)});
 
         % iterative calculation
+        iter        = 1;
         dx          = ones(3,1);
-        while (sqrt(dx'*dx) > 1e-3)
+        while (sqrt(dx'*dx) > 1e-3) && iter < 15
 
             % double differenced ranges to satellites
             rho_d_b0    = repmat(rho_m( prnb_idx) - rho_r( prnb_idx), 1, numel(SVprn)-1);
@@ -75,7 +79,6 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
             b           = Phi - Ambiguity - rho_dd0';
             A           = (u_s - u_b)';
             dx          = (A' * P * A) \ (A' * P) * b;
-            if verbose disp("dx = "); disp(dx); end;
 
             % update values
             X_r0        = X_r0 + dx;
@@ -86,6 +89,11 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
                 Xk_r(:,i)   = RotMat(we*(tow - tk_r(i)), 3) * Xe_r(:,i);
             end
 
+            if verbose
+                fprintf("Iteration %d\n\tdx =\t[%.3f, %.3f, %.3f]\n", iter, dx(1), dx(2), dx(3));
+            end;
+
+            iter        = iter + 1;
         end % iterative calculation
 
         % save the values
@@ -102,7 +110,7 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
         v2         = Phi - Ambiguity - (rho_d_b - rho_d_s)';
         assert(all((v1-v2) < sqrt(sum(diag(s_x{e}).^2))), "Self-control failed - the error terms do not match!");
 
-        waitbar(e/length(epochs), wb);
+        if (length(epochs) > 2) waitbar(e/length(epochs), wb); end
     end % epochs
 
 
@@ -115,6 +123,7 @@ function [X_r, X_rm, s_x] = ddLinObsFilter(obsm, obsr, ephm, ld, Cd, N1, N2, f1,
         hold off;
     end
 
-    close(wb);
+    if (length(epochs) > 2) close(wb); end
+    if verbose disp("------------------------------------------------------------"); end
 
 end

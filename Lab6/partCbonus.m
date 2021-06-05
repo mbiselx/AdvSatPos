@@ -58,26 +58,44 @@ disp("Determining ambiguities, using Clyde Goad method ...")
 
 %%------------------------------------------------------------
 % Part C:
-disp("Estimating the baseline vector via a least-square adjustment ...")
+disp("Estimating the baseline vector per single epoch via a least-square adjustment ...")
 
-% estimate the baseline vector via a least-square adjustment
-[X_r, X_rm, s_x]= ddrecLinObsFilter(obsm, obsr, ephm, ...
+% estimate the baseline vector per single epoch via a least-square adjustment
+% not really part of the lab06, just for fun
+[X_r, X_rm, s_x]= ddLinObsFilter(obsm, obsr, ephm, ...
                                  ld, Cd, N1, N2, ...
                                  F0*F_E1, F0*F_E5a, ...
-                                 Xm, assgnd_base_prn,
+                                 Xm, assgnd_base_prn, 10:121,
                                  true, true);
 
 %%------------------------------------------------------------
 % self check: plot results
 
-r_coords = xyz2plh(X_r');
+r_coords = xyz2plh(X_r{end}');
 r_coords(1:2) = rad2deg(r_coords(1:2));
 
-fprintf("Baseline (m):\t[%.3f, %.3f, %.3f]\n", X_rm(1), X_rm(2), X_rm(3))
-fprintf("Length (m):\t%.3f\n", sqrt(X_rm' * X_rm) )
-fprintf("Absolute (m):\t[%.3f, %.3f, %.3f]\n", X_r(1), X_r(2), X_r(3))
+fprintf("Baseline (m):\t[%.3f, %.3f, %.3f]\n", X_rm{end}(1), X_rm{end}(2), X_rm{end}(3))
+fprintf("Length (m):\t%.3f\n", sqrt(X_rm{end}' * X_rm{end}) )
+fprintf("Absolute (m):\t[%.3f, %.3f, %.3f]\n", X_r{end}(1), X_r{end}(2), X_r{end}(3))
 fprintf("  which is:\t[%2ddeg %2d\' %2.3f\"N, %2ddeg %2d\' %2.3f\"E, %.3fm]\n", ...
         fix(r_coords(1)), fix((r_coords(1)-fix(r_coords(1)))*60), (r_coords(1)*60 - fix(r_coords(1)*60))*60,
         fix(r_coords(2)), fix((r_coords(2)-fix(r_coords(2)))*60), (r_coords(2)*60 - fix(r_coords(2)*60))*60,
         r_coords(3))
-fprintf("The maximum uncertainty is %.3f m\n", sqrt(max(eig(s_x))))
+fprintf("The maximum uncertainty is %.3f m\n", sqrt(max(eig(s_x{end}))))
+
+if length(X_r) > 2
+    X_rm = cell2mat(X_rm')';
+    X_rm0 = mean(X_rm);
+    dX_rm = 1000*(X_rm - X_rm0); % make zero-mean, so as not to explode the plot
+
+    figure()
+    plot3(dX_rm(:,1), dX_rm(:,2), dX_rm(:,3))
+    axis("equal")
+    xlabel("x [mm]")
+    ylabel("y [mm]")
+    zlabel("z [mm]")
+    title("position around mean")
+    grid on
+    rotate3d on;
+
+end

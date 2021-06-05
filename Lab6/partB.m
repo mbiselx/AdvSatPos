@@ -36,12 +36,17 @@ datar(:,5:6)    = datar(:,5:6).*[l_E1, l_E5a];
 
 
 %%------------------------------------------------------------
-% Part A: get the double differences and covariance matrix per epoch
+% Part A:
+disp("Double differencing of observations ...")
+
+% get the double differences and covariance matrix per epoch
 [ld, Cd]        = double_difference(datam, datar, assgnd_base_prn, obsw);
 
 
 %%------------------------------------------------------------
 % Part B:
+disp("Determining ambiguities, using Clyde Goad method ...")
+
 % B1 recursively determine ddN1 and ddN2
 [N1, N2] = double_difference_ambiguity(ld, l_E1, l_E5a, obsw);
 
@@ -51,7 +56,8 @@ datar(:,5:6)    = datar(:,5:6).*[l_E1, l_E5a];
 % B3 using the Clyde Goad method, evaluate
 [N1_hat, N2_hat] = ClydeGoad_estimation(Nwl, Nif, F_E1, F_E5a);
 
-% Output 4: ambiguity values usig all observations from all epochs:
+% Output 4 & self check: ambiguity values usig all observations from all epochs:
+fprintf("Base SV: %d\n", assgnd_base_prn)
 for k = 1:length(N1{end})
     fprintf("DD(%2d-%2d):\tN1 =%6.1f (%4d)\tN2 =%6.1f (%4d)\tNwl =%6.1f\n", ...
         assgnd_base_prn, ld{end}(k,2), ...
